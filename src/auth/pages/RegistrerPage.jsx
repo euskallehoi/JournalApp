@@ -4,14 +4,25 @@ import { AuthLayout } from '../layout/AuthLayout';
 import { useForm } from '../../hooks/useForm';
 
 const formData = {
-    email: 'elMasCaverga@gmail.com',
-    password: '123456',
+    email: 'leonchorroarin@gmail.com',
+    password: '$Leoncito11',
     displayName: 'Leon',
 } 
 
+const formValidations = {
+  email: [  (value) => value.includes('@'), 'el correo debe tener un @'],
+  password: [  (value) => value.length >= 6, 'la contraseña debe de tener minimo 6 digitos'],
+  displayName: [  (value) => value.length >=1 , 'ponga su nombre no sea vago señor'],
+}
+
 export const RegistrerPage = () => {
 
-  const { displayName, email, password, onInputChange, formState } = useForm(formData);
+  const { 
+    formState,   displayName,      email,      password,    onInputChange,
+    isFormValid, displayNameValid, emailValid, passwordValid
+  } = useForm(formData, formValidations);
+
+  console.log(displayNameValid);
 
   const onSubmit = ( event ) => {
     event.preventDefault();
@@ -35,6 +46,8 @@ export const RegistrerPage = () => {
                       name='displayName'
                       value={ displayName }
                       onChange={ onInputChange }
+                      error={ !displayNameValid }
+                      helperText={ displayNameValid }
                     />
 
                     </Grid>
