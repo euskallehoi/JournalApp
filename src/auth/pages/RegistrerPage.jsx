@@ -1,9 +1,9 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { Button, Grid, Link, Typography, TextField} from '@mui/material';
+import { Alert, Button, Grid, Link, Typography, TextField} from '@mui/material';
 import { AuthLayout } from '../layout/AuthLayout';
 import { useForm } from '../../hooks/useForm';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { startCreatingUserWithEmailPassword } from '../../store/auth/thunks';
 
 const formData = {
@@ -22,6 +22,9 @@ export const RegistrerPage = () => {
 
   const dispatch = useDispatch();
   const [formSubmitted, setFormSubmitted] = useState(false)
+
+  const { status, errorMessage } = useSelector( state => state.auth );
+  const isCheckingAuthentication = useMemo( () => status === 'checking', [status]);
 
   const { 
     formState,   displayName,      email,      password,    onInputChange,
@@ -92,8 +95,18 @@ export const RegistrerPage = () => {
                    </Grid>
                
                    <Grid container spacing={ 2 } sx={{ mb: 2, mt: 1 }}>
+                        
+                        <Grid 
+                          item 
+                          xs={ 12 }
+                          display={ !!errorMessage ? '': 'none' }
+                        >
+                          <Alert severity='error'>{ errorMessage }</Alert>
+                        </Grid>
+
                        <Grid item xs={ 12 }>
                            <Button 
+                              disabled={isCheckingAuthentication}
                               type='submit'
                               variant='contained' 
                               fullWidth 
